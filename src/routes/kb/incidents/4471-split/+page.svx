@@ -4,7 +4,7 @@ title: '#4471 is three problems'
 owner: brandon
 status: open
 reviewed: 2026-10-28
-signature: 'Brandon Perfetti, with Claude (claude-opus-5-5)'
+signature: 'v1.eyJzdWIiOiI2ODciLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5MzIyMzY4NCwiZXhwIjoxNzkzMzEwMDg0fQ.9GQ2Jqy79RxXn4-lkl0nqhilDXmMlfwbO_wMXN44bSw'
 ---
 
 <script>
