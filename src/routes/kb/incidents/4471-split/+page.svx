@@ -44,8 +44,8 @@ parser fix does not touch it: the hint has to print the tenant's order.
 These reports describe a date that moved by a single day, not a swapped day and month: Tuesday 12
 May showed as Monday 11 May; the same meeting landed on Tuesday for a client in Lisbon and on Monday
 for a client in Toronto. A day–month swap cannot do that. The desk read them as one-day moves
-(`desk-notes.json`), and the #4471 table still counts them under `parser`, by tenant. The cause is
-not known yet; a time-zone conversion is the first thing to check.
+(`desk-notes.json`). They stay counted under `parser`, where they are filed by tenant, and have a
+ticket of their own. The cause is not known yet; a time-zone conversion is the first thing to check.
 
 ## Why it became one ticket
 
@@ -63,7 +63,7 @@ not known yet; a time-zone conversion is the first thing to check.
    and it did not come through booking-v3's form.
 2. Merge form reports from booking-v3 tenants into the `hint` ticket.
 3. Read the body before merging. A date that moved by one day goes to the `one-day-move` ticket, and
-   its id goes into `desk-notes.json`; this table moves it on the next build.
+   its id goes into `desk-notes.json`; this table picks it up on the next build.
 4. Replace decision 0001 with a new record that dedupes by cause, not by subject.
 
 <RenderStamp {signature} />

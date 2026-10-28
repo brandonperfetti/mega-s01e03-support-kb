@@ -10,8 +10,9 @@
 
   const all = $derived(uniqueById(reports as Report[]).filter((r) => r.mergedInto === ticket));
   const groups = $derived(splitTicket(reports as Report[], ticket, notes.oneDayMove, tenantOf));
-  const placed = $derived(groups.reduce((n, g) => n + g.reports.length, 0));
-  const mistagged = $derived(groups.reduce((n, g) => n + g.reports.filter((r) => r.meta.intakeTag !== g.problem).length, 0));
+  const filed = $derived(groups.filter((g) => !g.alsoIn.length));
+  const placed = $derived(filed.reduce((n, g) => n + g.reports.length, 0));
+  const mistagged = $derived(filed.reduce((n, g) => n + g.reports.filter((r) => r.meta.intakeTag !== g.problem).length, 0));
   const tags = (g: { taggedAs: Record<string, number> }) =>
     Object.entries(g.taggedAs)
       .sort((a, b) => b[1] - a[1])
@@ -35,7 +36,7 @@
       {@const t = TICKETS_4471[g.problem]}
       <tr class:open={!t}>
         <td><code>{g.problem}</code></td>
-        <td>{g.reports.length}</td>
+        <td>{g.reports.length}{#if g.alsoIn.length}<span class="also"> · in {g.alsoIn.join(', ')}</span>{/if}</td>
         <td class="tags">{tags(g)}</td>
         <td>{g.tenants}</td>
         <td>{g.firstSeen} → {g.lastSeen}</td>
@@ -44,6 +45,13 @@
     {/each}
   </tbody>
 </table>
+
+{#each groups.filter((g) => g.alsoIn.length) as g (g.problem)}
+  <p class="note">
+    {g.reports.length} reports read as a <code>{g.problem}</code> are counted where they are filed, under
+    <code>{g.alsoIn.join(', ')}</code> by tenant, and tracked on their own too.
+  </p>
+{/each}
 
 <p class="note">
   {mistagged} of {all.length} reports carry an intake tag that is not their problem. Intake guesses from the
@@ -54,6 +62,7 @@
   .sum { font-size: 1.1rem; }
   .tags { color: var(--muted); font-size: 0.85em; }
   .note { color: var(--muted); font-size: 0.85em; }
+  .also { color: var(--muted); font-size: 0.85em; }
   .warn { color: var(--warn); font-weight: 600; }
   .open td { background: var(--warn-bg); }
   .open td:last-child { color: var(--warn); font-weight: 600; }
