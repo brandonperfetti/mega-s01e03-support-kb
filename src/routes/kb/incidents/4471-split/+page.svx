@@ -14,10 +14,12 @@ signature: 'Brandon Perfetti, with Claude (claude-opus-5-5)'
 </script>
 
 [#4471](/kb/incidents/4471) was merged as one issue and marked known. Read by tenant and by the
-way each report came in, its reports are three problems. The fix queued for #4471 fixes one of them.
+way each report came in, its reports are three problems. #4471 closed on 5 October with the parser
+fix; that settles two of the three.
 
 <Callout kind="warn">
-Not known. Three problems, three tickets. The queued parser fix leaves the other two open.
+Three problems, three tickets. The parser is fixed. The hint won't be fixed: booking-v3's form is
+retired. The one-day move is still open; neither change touches it.
 </Callout>
 
 ## What #4471 holds
@@ -30,14 +32,15 @@ Not known. Three problems, three tickets. The queued parser fix leaves the other
 
 The shared parser reads every date month first. Every tenant on file writes the day first, so a
 booking for 2 December comes out as 12 February. It reaches us by app, email and form, from every
-tenant. This is the bug #4471 names, and the queued fix is for it.
+tenant. This is the bug #4471 names. Fixed: `fix(dates): parse dd/mm for eu locales`.
 
 ### `hint`: booking-v3 tells people to type the month first
 
 booking-v3 prints `MM/DD/YYYY` under its date field. A day-first tenant's people type what the hint
 says, and the form reads the date the tenant's way. The symptom is the same swap, but the bug is in
 the form, not the parser. It comes only through the form, only from tenants on booking-v3. The
-parser fix does not touch it: the hint has to print the tenant's order.
+parser fix does not touch it. Won't fix: engineering retired booking-v3's form, so no new reports
+should come this way.
 
 ### `one-day-move`: dates shift by one day
 
@@ -59,9 +62,9 @@ ticket of their own. The cause is not known yet; a time-zone conversion is the f
 
 ## What the desk does now
 
-1. Keep #4471 for `parser` only. Merge a new report there only when its tenant writes the day first
-   and it did not come through booking-v3's form.
-2. Merge form reports from booking-v3 tenants into the `hint` ticket.
+1. A new report of a swapped day and month after 5 October is not #4471: the parser fix should have
+   ended it. Open a new ticket and link #4471.
+2. A form report from a booking-v3 tenant means the form is still live somewhere. Tell engineering.
 3. Read the body before merging. A date that moved by one day goes to the `one-day-move` ticket, and
    its id goes into `desk-notes.json`; this table picks it up on the next build.
 4. Replace decision 0001 with a new record that dedupes by cause, not by subject.

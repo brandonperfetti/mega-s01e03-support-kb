@@ -29,18 +29,19 @@
 
 <table>
   <thead>
-    <tr><th>problem</th><th>reports</th><th>tagged at intake as</th><th>tenants</th><th>seen</th><th>tracked in</th></tr>
+    <tr><th>problem</th><th>reports</th><th>tagged at intake as</th><th>tenants</th><th>seen</th><th>ticket</th><th>outcome</th></tr>
   </thead>
   <tbody>
     {#each groups as g (g.problem)}
       {@const t = TICKETS_4471[g.problem]}
       <tr class:open={!t}>
         <td><code>{g.problem}</code></td>
-        <td>{g.reports.length}{#if g.alsoIn.length}<span class="also"> · in {g.alsoIn.join(', ')}</span>{/if}</td>
+        <td>{g.reports.length}{#if g.alsoIn.length}<span class="also">&nbsp;· in {g.alsoIn.join(', ')}</span>{/if}</td>
         <td class="tags">{tags(g)}</td>
         <td>{g.tenants}</td>
         <td>{g.firstSeen} → {g.lastSeen}</td>
         <td>{#if t}<a href={t.href}>{t.label}</a>{:else}no ticket yet{/if}</td>
+        <td class:pending={t?.state === 'open'}>{t?.state ?? ''}{#if t?.why}<span class="also">&nbsp;· {t.why}</span>{/if}</td>
       </tr>
     {/each}
   </tbody>
@@ -64,6 +65,7 @@
   .note { color: var(--muted); font-size: 0.85em; }
   .also { color: var(--muted); font-size: 0.85em; }
   .warn { color: var(--warn); font-weight: 600; }
+  .pending { color: var(--warn); font-weight: 600; }
   .open td { background: var(--warn-bg); }
   .open td:last-child { color: var(--warn); font-weight: 600; }
 </style>
