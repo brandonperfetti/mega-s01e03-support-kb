@@ -34,3 +34,16 @@ Support desk. Decision records: whoever signed them.
 ---
 
 Exported 2026-10-04 from the `support` repo, `apps/kb/` → `src/`.
+
+## This copy
+
+A public copy of the export for MEGA.dev S01E03. It adds a build harness (`package.json`,
+`svelte.config.js`, `vite.config.js`, `src/app.html`, `src/routes/+layout.ts`) and one signed page:
+[`src/routes/kb/incidents/4471-split/+page.svx`](src/routes/kb/incidents/4471-split/+page.svx), with its
+logic in `src/lib/kb/problems.ts`, `ProblemTable.svelte` and `tickets-4471.ts`. No existing page or
+component was changed.
+
+The page as the desk sees it: [`rendered/4471-split.png`](rendered/4471-split.png), and the built
+site in [`rendered/`](rendered/) (`npm install && npm run build` rebuilds it into `build/`).
+
+The problems in #4471 are filed as issues in this repo: #1 `parser`, #2 `hint`, #3 `one-day-move`.

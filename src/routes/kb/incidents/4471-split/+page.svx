@@ -1,0 +1,69 @@
+---
+layout: runbook
+title: '#4471 is three problems'
+owner: brandon
+status: open
+reviewed: 2026-10-28
+signature: 'Brandon Perfetti, with Claude (claude-opus-5-5)'
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) was merged as one issue and marked known. Read by tenant and by the
+way each report came in, its reports are three problems. The fix queued for #4471 fixes one of them.
+
+<Callout kind="warn">
+Not known. Three problems, three tickets. The queued parser fix leaves the other two open.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} />
+
+## The three problems
+
+### `parser`: dates read month first
+
+The shared parser reads every date month first. Every tenant on file writes the day first, so a
+booking for 2 December comes out as 12 February. It reaches us by app, email and form, from every
+tenant. This is the bug #4471 names, and the queued fix is for it.
+
+### `hint`: booking-v3 tells people to type the month first
+
+booking-v3 prints `MM/DD/YYYY` under its date field. A day-first tenant's people type what the hint
+says, and the form reads the date the tenant's way. The symptom is the same swap, but the bug is in
+the form, not the parser. It comes only through the form, only from tenants on booking-v3. The
+parser fix does not touch it: the hint has to print the tenant's order.
+
+### `one-day-move`: dates shift by one day
+
+These reports describe a date that moved by a single day, not a swapped day and month: Tuesday 12
+May showed as Monday 11 May; the same meeting landed on Tuesday for a client in Lisbon and on Monday
+for a client in Toronto. A day–month swap cannot do that. The desk read them as one-day moves
+(`desk-notes.json`), and the #4471 table still counts them under `parser`, by tenant. The cause is
+not known yet; a time-zone conversion is the first thing to check.
+
+## Why it became one ticket
+
+- We merge on subject ([decision 0001](/kb/decisions/0001-dedupe-by-subject)). All three problems
+  come in with the same subjects ("Wrong day on the invite", "Date is wrong"), so the subject cannot
+  tell them apart. The cause depends on the tenant, its booking form and the channel, which
+  `causes.ts` already knows and the [dedupe explorer](/kb/triage/dedupe) shows.
+- Intake tags each report from the reporter's browser. That guess disagrees with the problem for
+  the reports counted under the table.
+- A month swap and a one-day move look alike in a subject line. Only the body tells them apart.
+
+## What the desk does now
+
+1. Keep #4471 for `parser` only. Merge a new report there only when its tenant writes the day first
+   and it did not come through booking-v3's form.
+2. Merge form reports from booking-v3 tenants into the `hint` ticket.
+3. Read the body before merging. A date that moved by one day goes to the `one-day-move` ticket, and
+   its id goes into `desk-notes.json`; this table moves it on the next build.
+4. Replace decision 0001 with a new record that dedupes by cause, not by subject.
+
+<RenderStamp {signature} />
